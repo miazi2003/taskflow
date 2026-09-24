@@ -67,21 +67,22 @@ export const TaskCard = ({ task }) => {
       onClick={() => openEditModal(task)}
       className="group relative bg-white rounded-xl border border-slate-200/90 hover:border-slate-300 p-4 shadow-subtle hover:shadow-card-hover transition-all cursor-grab active:cursor-grabbing select-none"
     >
-      <div className="flex items-center justify-between gap-2 mb-2.5">
+      <div className="flex items-center justify-between gap-2 mb-2">
         <div className="flex items-center gap-1.5 flex-wrap">
           {project && (
             <span
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold tracking-wide uppercase"
+              className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium tracking-tight truncate max-w-[190px]"
               style={{
                 backgroundColor: `${project.color}15`,
                 color: project.color,
               }}
+              title={project.name}
             >
               <span
-                className="w-1.5 h-1.5 rounded-full"
+                className="w-1.5 h-1.5 rounded-full shrink-0"
                 style={{ backgroundColor: project.color }}
               />
-              {project.code}
+              <span className="truncate">{project.name}</span>
             </span>
           )}
           <PriorityBadge priority={task.priority} />
@@ -131,7 +132,7 @@ export const TaskCard = ({ task }) => {
 
       <h4
         className={`text-sm font-semibold text-slate-900 leading-snug mb-2 group-hover:text-indigo-600 transition-colors ${
-          task.status === 'done' ? 'line-through text-slate-500' : ''
+          task.status === 'done' ? 'line-through text-slate-400' : ''
         }`}
       >
         {task.title}
@@ -146,8 +147,8 @@ export const TaskCard = ({ task }) => {
       <div className="flex items-center justify-between pt-2 border-t border-slate-100 mt-2">
         <div className="flex items-center gap-2">
           <Avatar member={assignee} size="xs" />
-          <span className="text-xs text-slate-600 truncate max-w-[100px]" title={assignee?.name}>
-            {assignee ? assignee.name.split(' ')[0] : 'Unassigned'}
+          <span className="text-xs text-slate-600 truncate max-w-[110px]" title={assignee?.name}>
+            {assignee ? assignee.name : 'Unassigned'}
           </span>
         </div>
 
@@ -195,16 +196,18 @@ export const TaskCard = ({ task }) => {
           ))}
         </div>
 
-        <select
-          value={task.status}
-          onChange={(e) => moveTaskStatus(task.id, e.target.value)}
-          className="text-[11px] text-slate-500 bg-transparent border-0 py-0.5 pl-1 pr-4 focus:ring-0 cursor-pointer font-medium hover:text-slate-900"
-          title="Change Status"
-        >
-          <option value="todo">To Do</option>
-          <option value="in-progress">In Progress</option>
-          <option value="done">Done</option>
-        </select>
+        <div className="flex items-center gap-1">
+          <select
+            value={task.status}
+            onChange={(e) => moveTaskStatus(task.id, e.target.value)}
+            className="text-[11px] font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded px-2 py-0.5 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
+            title="Change Status"
+          >
+            <option value="todo">To Do</option>
+            <option value="in-progress">In Progress</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
       </div>
     </div>
   );

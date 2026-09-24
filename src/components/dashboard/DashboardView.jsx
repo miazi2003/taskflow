@@ -12,8 +12,8 @@ import {
 } from 'lucide-react';
 import { useTaskFlow } from '../../context/TaskContext';
 import { Avatar } from '../ui/Avatar';
-import { PriorityBadge } from '../ui/Badge';
-import { formatDisplayDate } from '../../utils/dateUtils';
+import { PriorityBadge, StatusBadge } from '../ui/Badge';
+import { formatDisplayDate, isTaskOverdue, isTaskDueSoon } from '../../utils/dateUtils';
 
 export const DashboardView = () => {
   const {
@@ -38,6 +38,10 @@ export const DashboardView = () => {
   const completionPercentage =
     totalTasksCount > 0 ? Math.round((completedTasksCount / totalTasksCount) * 100) : 0;
 
+  const upcomingTasks = [...tasks]
+    .filter((t) => t.status !== 'done')
+    .sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+
   return (
     <div className="space-y-8">
       <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-subtle flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -59,7 +63,7 @@ export const DashboardView = () => {
             Welcome to TaskFlow
           </h1>
           <p className="text-sm text-slate-500 mt-1 max-w-2xl">
-            Track client deliverables, identify bottlenecks, and keep your cross-functional team aligned across all active projects.
+            Track client deliverables, identify bottlenecks, and keep your team aligned across all active projects.
           </p>
         </div>
 
@@ -144,7 +148,7 @@ export const DashboardView = () => {
             <div
               className={`w-9 h-9 rounded-xl flex items-center justify-center ${
                 overdueTasks.length > 0
-                  ? 'bg-rose-100 text-rose-600 animate-pulse'
+                  ? 'bg-rose-100 text-rose-600'
                   : 'bg-slate-100 text-slate-500'
               }`}
             >
@@ -194,73 +198,63 @@ export const DashboardView = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-subtle">
-          <div className="flex items-center justify-between mb-4">
+      {overdueTasks.length > 0 && (
+        <div className="bg-rose-50/50 border border-rose-200 rounded-2xl p-5 shadow-subtle">
+          <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center">
+              <div className="w-7 h-7 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center">
                 <AlertOctagon className="w-4 h-4" />
               </div>
-              <div>
-                <h3 className="text-base font-bold text-slate-900">Overdue Tasks</h3>
-                <p className="text-xs text-slate-500">Items past deadline that need immediate status updates</p>
-              </div>
+              <h3 className="text-sm font-bold text-rose-900">
+                Overdue Tasks Requiring Triage ({overdueTasks.length})
+              </h3>
             </div>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800">
-              {overdueTasks.length}
-            </span>
           </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {overdueTasks.map((task) => {
+              const project = getProjectById(task.projectId);
+              const assignee = getMemberById(task.assigneeId);
 
-          <div className="space-y-3">
-            {overdueTasks.length > 0 ? (
-              overdueTasks.map((task) => {
-                const project = getProjectById(task.projectId);
-                const assignee = getMemberById(task.assigneeId);
+              return (
+                <div
+                  key={task.id}
+                  onClick={() => openEditModal(task)}
+                  className="bg-white p-3.5 rounded-xl border border-rose-200 shadow-xs hover:border-rose-300 transition-all flex flex-col justify-between gap-2 cursor-pointer"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <span
+                        className="text-[11px] font-medium px-2 py-0.5 rounded"
+                        style={{
+                          backgroundColor: `${project?.color || '#6366f1'}15`,
+                          color: project?.color || '#6366f1',
+                        }}
+                      >
+                        {project?.name}
+                      </span>
+                      <span className="text-xs font-semibold text-rose-600">
+                        {formatDisplayDate(task.dueDate)}
+                      </span>
+                    </div>
+                    <h4 className="text-sm font-semibold text-slate-900">
+                      {task.title}
+                    </h4>
+                  </div>
 
-                return (
-                  <div
-                    key={task.id}
-                    onClick={() => openEditModal(task)}
-                    className="group flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border border-rose-100 bg-rose-50/40 hover:bg-rose-50 hover:border-rose-200 transition-all cursor-pointer"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        {project && (
-                          <span
-                            className="text-[10px] font-bold px-1.5 py-0.5 rounded uppercase"
-                            style={{
-                              backgroundColor: `${project.color}20`,
-                              color: project.color,
-                            }}
-                          >
-                            {project.code}
-                          </span>
-                        )}
-                        <PriorityBadge priority={task.priority} />
-                        <span className="text-xs font-semibold text-rose-700">
-                          Due {formatDisplayDate(task.dueDate)}
-                        </span>
-                      </div>
-                      <h4 className="text-sm font-semibold text-slate-900 truncate group-hover:text-indigo-600 transition-colors">
-                        {task.title}
-                      </h4>
-                      <div className="flex items-center gap-2 mt-1.5">
-                        <Avatar member={assignee} size="xs" />
-                        <span className="text-xs text-slate-600">{assignee?.name}</span>
-                      </div>
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                    <div className="flex items-center gap-1.5">
+                      <Avatar member={assignee} size="xs" />
+                      <span className="text-xs text-slate-600">{assignee?.name}</span>
                     </div>
 
-                    <div
-                      className="flex items-center gap-1.5 sm:self-center shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-rose-200/60"
-                      onClick={(e) => e.stopPropagation()}
-                    >
+                    <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                       <button
                         type="button"
                         onClick={() => moveTaskStatus(task.id, 'in-progress')}
                         className={`px-2.5 py-1 text-xs font-medium rounded-lg transition-colors ${
                           task.status === 'in-progress'
                             ? 'bg-indigo-600 text-white font-semibold'
-                            : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
+                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                         }`}
                       >
                         In Progress
@@ -271,106 +265,129 @@ export const DashboardView = () => {
                         className="px-2.5 py-1 text-xs font-medium text-emerald-700 bg-emerald-100 hover:bg-emerald-200 rounded-lg transition-colors inline-flex items-center gap-1"
                       >
                         <CheckCircle2 className="w-3.5 h-3.5" />
-                        Mark Done
-                      </button>
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <div className="p-6 text-center bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
-                <p className="text-sm font-semibold text-slate-800">All caught up!</p>
-                <p className="text-xs text-slate-500 mt-0.5">There are zero overdue tasks across all active projects.</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-subtle">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center">
-                <Clock className="w-4 h-4" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-slate-900">Tasks Due Soon</h3>
-                <p className="text-xs text-slate-500">Deliverables scheduled within the next 3 days</p>
-              </div>
-            </div>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800">
-              {dueSoonTasks.length}
-            </span>
-          </div>
-
-          <div className="space-y-3">
-            {dueSoonTasks.length > 0 ? (
-              dueSoonTasks.map((task) => {
-                const project = getProjectById(task.projectId);
-                const assignee = getMemberById(task.assigneeId);
-
-                return (
-                  <div
-                    key={task.id}
-                    onClick={() => openEditModal(task)}
-                    className="group flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border border-amber-100 bg-amber-50/30 hover:bg-amber-50 hover:border-amber-200 transition-all cursor-pointer"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        {project && (
-                          <span
-                            className="text-[10px] font-bold px-1.5 py-0.5 rounded uppercase"
-                            style={{
-                              backgroundColor: `${project.color}20`,
-                              color: project.color,
-                            }}
-                          >
-                            {project.code}
-                          </span>
-                        )}
-                        <PriorityBadge priority={task.priority} />
-                        <span className="text-xs font-semibold text-amber-700 flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
-                          {formatDisplayDate(task.dueDate)}
-                        </span>
-                      </div>
-                      <h4 className="text-sm font-semibold text-slate-900 truncate group-hover:text-indigo-600 transition-colors">
-                        {task.title}
-                      </h4>
-                      <div className="flex items-center gap-2 mt-1.5">
-                        <Avatar member={assignee} size="xs" />
-                        <span className="text-xs text-slate-600">{assignee?.name}</span>
-                        <span className="text-xs text-slate-400">•</span>
-                        <span className="text-xs text-slate-500 capitalize">
-                          {task.status.replace('-', ' ')}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div
-                      className="flex items-center gap-1.5 shrink-0 pt-2 sm:pt-0"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <button
-                        type="button"
-                        onClick={() => moveTaskStatus(task.id, 'done')}
-                        className="px-2.5 py-1 text-xs font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors inline-flex items-center gap-1"
-                      >
-                        <CheckCircle2 className="w-3.5 h-3.5" />
                         Done
                       </button>
                     </div>
                   </div>
-                );
-              })
-            ) : (
-              <div className="p-6 text-center bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                <Calendar className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-                <p className="text-sm font-semibold text-slate-800">No imminent deadlines</p>
-                <p className="text-xs text-slate-500 mt-0.5">No tasks are due within the next 3 days.</p>
-              </div>
-            )}
+                </div>
+              );
+            })}
           </div>
+        </div>
+      )}
+
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-subtle overflow-hidden">
+        <div className="p-5 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 className="text-lg font-bold text-slate-900">Upcoming Tasks</h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Active tasks sorted by upcoming deadlines across all projects
+            </p>
+          </div>
+          <button
+            onClick={() => setActiveTab('board')}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-700 self-start sm:self-auto"
+          >
+            <span>View Kanban Board</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm border-collapse">
+            <thead>
+              <tr className="bg-slate-50/75 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <th className="py-3 px-4 sm:px-6">Task Title</th>
+                <th className="py-3 px-4">Project</th>
+                <th className="py-3 px-4">Assignee</th>
+                <th className="py-3 px-4">Due Date</th>
+                <th className="py-3 px-4">Status</th>
+                <th className="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {upcomingTasks.length > 0 ? (
+                upcomingTasks.map((task) => {
+                  const project = getProjectById(task.projectId);
+                  const assignee = getMemberById(task.assigneeId);
+                  const overdue = isTaskOverdue(task.dueDate, task.status);
+                  const dueSoon = isTaskDueSoon(task.dueDate, task.status, 3);
+
+                  return (
+                    <tr
+                      key={task.id}
+                      onClick={() => openEditModal(task)}
+                      className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
+                    >
+                      <td className="py-3.5 px-4 sm:px-6">
+                        <div className="flex items-center gap-2">
+                          <PriorityBadge priority={task.priority} />
+                          <span className="font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors">
+                            {task.title}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4 whitespace-nowrap">
+                        <span
+                          className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-medium"
+                          style={{
+                            backgroundColor: `${project?.color || '#6366f1'}15`,
+                            color: project?.color || '#6366f1',
+                          }}
+                        >
+                          <span
+                            className="w-1.5 h-1.5 rounded-full"
+                            style={{ backgroundColor: project?.color || '#6366f1' }}
+                          />
+                          {project?.name}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 whitespace-nowrap">
+                        <Avatar member={assignee} size="xs" showName />
+                      </td>
+                      <td className="py-3.5 px-4 whitespace-nowrap">
+                        <span
+                          className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded ${
+                            overdue
+                              ? 'text-rose-700 bg-rose-50 border border-rose-200'
+                              : dueSoon
+                              ? 'text-amber-700 bg-amber-50 border border-amber-200'
+                              : 'text-slate-600 bg-slate-50'
+                          }`}
+                        >
+                          <Calendar className="w-3 h-3" />
+                          {formatDisplayDate(task.dueDate)}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 whitespace-nowrap">
+                        <StatusBadge status={task.status} />
+                      </td>
+                      <td
+                        className="py-3.5 px-4 text-right whitespace-nowrap"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <select
+                          value={task.status}
+                          onChange={(e) => moveTaskStatus(task.id, e.target.value)}
+                          className="text-xs font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
+                        >
+                          <option value="todo">To Do</option>
+                          <option value="in-progress">In Progress</option>
+                          <option value="done">Done</option>
+                        </select>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={6} className="py-8 text-center text-slate-500 text-xs">
+                    No active upcoming tasks scheduled.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -379,7 +396,7 @@ export const DashboardView = () => {
           <div>
             <h3 className="text-lg font-bold text-slate-900">Active Projects</h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              Client initiatives, completion rates, and active team allocations
+              Initiatives, completion rates, and active team allocations
             </p>
           </div>
           <button
