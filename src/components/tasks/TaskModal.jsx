@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Calendar, Folder, User, Check, AlertTriangle, Trash2, Loader2, Flag } from 'lucide-react';
+import { X, Folder, User, Check, AlertTriangle, Trash2, Loader2, Flag } from 'lucide-react';
 import { useTaskFlow } from '../../context/TaskContext';
 import { CustomSelect } from '../ui/CustomSelect';
 import { getTodayDateString } from '../../utils/dateUtils';
@@ -324,23 +324,18 @@ export const TaskModal = () => {
               <label className="block text-[11px] sm:text-xs font-medium text-[#2D322C] mb-1">
                 Due Date <span className="text-[#B82B59] font-normal">*</span>
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#747871]">
-                  <Calendar className="w-3.5 h-3.5" />
-                </div>
-                <input
-                  type="date"
-                  value={dueDate}
-                  disabled={submitStatus !== 'idle'}
-                  onChange={(e) => {
-                    setDueDate(e.target.value);
-                    if (errors.dueDate) setErrors((prev) => ({ ...prev, dueDate: '' }));
-                  }}
-                  className={`w-full pl-8.5 pr-2 py-1.5 sm:pl-9 sm:pr-3 sm:py-2 text-xs font-normal bg-white border ${
-                    errors.dueDate ? 'border-[#B82B59] ring-1 ring-[#B82B59]' : 'border-[#EDE7DC] hover:border-[#D5CDBD]'
-                  } rounded-full text-[#1B1F1B] focus:outline-none focus:ring-1 focus:ring-[#1B1F1B] focus:border-[#1B1F1B] shadow-2xs transition-all disabled:opacity-50`}
-                />
-              </div>
+              <input
+                type="date"
+                value={dueDate}
+                disabled={submitStatus !== 'idle'}
+                onChange={(e) => {
+                  setDueDate(e.target.value);
+                  if (errors.dueDate) setErrors((prev) => ({ ...prev, dueDate: '' }));
+                }}
+                className={`w-full px-3.5 py-1.5 sm:py-2 text-xs font-normal bg-white border ${
+                  errors.dueDate ? 'border-[#B82B59] ring-1 ring-[#B82B59]' : 'border-[#EDE7DC] hover:border-[#D5CDBD]'
+                } rounded-full text-[#1B1F1B] focus:outline-none focus:ring-1 focus:ring-[#1B1F1B] focus:border-[#1B1F1B] shadow-2xs transition-all disabled:opacity-50 cursor-pointer`}
+              />
               {errors.dueDate && (
                 <p className="text-[11px] font-normal text-[#B82B59] mt-0.5 flex items-center gap-1">
                   <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
