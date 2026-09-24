@@ -110,10 +110,10 @@ export const CustomSelect = ({
           onClick={(e) => e.stopPropagation()}
           className={`absolute ${
             align === 'right' ? 'right-0' : 'left-0'
-          } z-[120] ${menuWidth} max-h-60 overflow-y-auto no-scrollbar bg-white rounded-2xl shadow-soft-lg border border-[#EDE7DC] p-1.5 transition-all duration-150 ease-out animate-in fade-in zoom-in-95 ${
+          } z-[120] ${menuWidth} max-h-60 overflow-y-auto no-scrollbar bg-white rounded-2xl shadow-soft-lg border border-[#EDE7DC] p-1.5 transition-all ${
             isUp
-              ? 'bottom-full mb-1.5 origin-bottom'
-              : 'top-full mt-1.5 origin-top'
+              ? 'bottom-full mb-1.5 origin-bottom animate-dropdown-in-up'
+              : 'top-full mt-1.5 origin-top animate-dropdown-in'
           }`}
         >
           {options.map((opt) => {

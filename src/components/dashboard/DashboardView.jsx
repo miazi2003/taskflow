@@ -247,18 +247,18 @@ export const DashboardView = () => {
             <button
               type="button"
               onClick={() => setActiveTab('board')}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs sm:text-sm font-medium text-[#1B1F1B] bg-white hover:bg-[#FAF7F2] border border-[#EDE7DC] hover:border-[#D5CDBD] transition-all shadow-2xs whitespace-nowrap rounded-full cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs sm:text-sm font-medium text-[#1B1F1B] bg-white hover:bg-[#FAF7F2] border border-[#EDE7DC] hover:border-[#D5CDBD] transition-all shadow-2xs whitespace-nowrap rounded-full cursor-pointer shrink-0"
             >
-              <span>Kanban Board</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <span className="whitespace-nowrap">Kanban Board</span>
+              <ArrowRight className="w-3.5 h-3.5 shrink-0" />
             </button>
             <button
               type="button"
               onClick={() => openCreateModal()}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs sm:text-sm font-medium text-white bg-[#1B1F1B] hover:bg-[#2D322C] transition-all shadow-2xs whitespace-nowrap rounded-full cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs sm:text-sm font-medium text-white bg-[#1B1F1B] hover:bg-[#2D322C] transition-all shadow-2xs whitespace-nowrap rounded-full cursor-pointer shrink-0"
             >
-              <Plus className="w-3.5 h-3.5" />
-              <span>New Task</span>
+              <Plus className="w-3.5 h-3.5 shrink-0" />
+              <span className="whitespace-nowrap">New Task</span>
             </button>
           </div>
         </div>

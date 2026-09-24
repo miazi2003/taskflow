@@ -65,10 +65,10 @@ export const StatusDropdown = ({ status, onChange, direction = 'up' }) => {
       {isOpen && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className={`absolute right-0 z-[100] w-36 bg-white rounded-2xl shadow-soft-lg border border-[#EDE7DC] p-1.5 transition-all duration-150 ease-out animate-in fade-in zoom-in-95 ${
+          className={`absolute right-0 z-[100] w-36 bg-white rounded-2xl shadow-soft-lg border border-[#EDE7DC] p-1.5 transition-all ${
             isUp
-              ? 'bottom-full mb-1.5 origin-bottom-right'
-              : 'top-full mt-1.5 origin-top-right'
+              ? 'bottom-full mb-1.5 origin-bottom-right animate-dropdown-in-up'
+              : 'top-full mt-1.5 origin-top-right animate-dropdown-in'
           }`}
         >
           {STATUS_OPTIONS.map((opt) => {

@@ -61,10 +61,10 @@ export const ProjectsView = () => {
           <button
             type="button"
             onClick={() => openCreateModal()}
-            className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-medium bg-[#1B1F1B] hover:bg-[#2D322C] text-white rounded-full transition-all shadow-2xs cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-medium bg-[#1B1F1B] hover:bg-[#2D322C] text-white rounded-full transition-all shadow-2xs cursor-pointer whitespace-nowrap shrink-0"
           >
-            <Plus className="w-3.5 h-3.5" />
-            <span>New Task</span>
+            <Plus className="w-3.5 h-3.5 shrink-0" />
+            <span className="whitespace-nowrap">New Task</span>
           </button>
         </div>
       </div>
