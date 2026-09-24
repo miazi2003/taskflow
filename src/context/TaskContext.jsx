@@ -205,6 +205,7 @@ export const TaskProvider = ({ children }) => {
         updateFilter,
         resetFilters,
         createTask,
+        addTask: createTask,
         updateTask,
         deleteTask,
         moveTaskStatus,

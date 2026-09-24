@@ -6,6 +6,7 @@ export const INITIAL_MEMBERS = [
     role: 'Lead Product Designer',
     initials: 'ER',
     color: '#8b5cf6',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
   },
   {
     id: 'usr-2',
@@ -14,6 +15,7 @@ export const INITIAL_MEMBERS = [
     role: 'Senior Frontend Engineer',
     initials: 'MV',
     color: '#3b82f6',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
   },
   {
     id: 'usr-3',
@@ -22,6 +24,7 @@ export const INITIAL_MEMBERS = [
     role: 'Backend Architect',
     initials: 'AM',
     color: '#10b981',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
   },
   {
     id: 'usr-4',
@@ -30,6 +33,7 @@ export const INITIAL_MEMBERS = [
     role: 'Full Stack Developer',
     initials: 'DT',
     color: '#f59e0b',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
   },
   {
     id: 'usr-5',
@@ -38,6 +42,7 @@ export const INITIAL_MEMBERS = [
     role: 'QA & Accessibility Specialist',
     initials: 'SJ',
     color: '#ec4899',
+    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
   },
 ];
 
