@@ -264,14 +264,14 @@ export const DashboardView = () => {
         </div>
 
         <div className="overflow-x-auto pb-2">
-          <div className="min-w-[1240px] space-y-3">
-            <div className="flex items-center gap-5 px-6 text-xs sm:text-[13px] font-medium text-[#747871] uppercase tracking-wider select-none">
-              <div className="w-10 text-center shrink-0">No</div>
+          <div className="min-w-[1360px] space-y-3">
+            <div className="flex items-center gap-4 sm:gap-5 px-5 sm:px-6 text-xs sm:text-[13px] font-medium text-[#747871] uppercase tracking-wider select-none w-full">
+              <div className="w-8 text-center shrink-0">No</div>
               <div className="w-24 shrink-0">Priority</div>
-              <div className="min-w-[280px] flex-1">Task Title</div>
-              <div className="w-48 shrink-0">Project</div>
-              <div className="w-48 shrink-0">Assignee</div>
-              <div className="w-36 shrink-0">Due Date</div>
+              <div className="min-w-[260px] flex-1">Task Title</div>
+              <div className="w-44 shrink-0">Project</div>
+              <div className="w-44 shrink-0">Assignee</div>
+              <div className="w-32 shrink-0">Due Date</div>
               <div className="w-28 shrink-0">Status</div>
               <div className="w-32 shrink-0 text-right">Action</div>
             </div>
@@ -294,9 +294,9 @@ export const DashboardView = () => {
                   <div
                     key={task.id}
                     onClick={() => openEditModal(task)}
-                    className="bg-white rounded-xl px-6 py-4.5 border border-[#EDE7DC] hover:border-[#D5CDBD] shadow-2xs hover:shadow-soft transition-all duration-150 cursor-pointer group flex items-center gap-5 min-h-[68px]"
+                    className="bg-white rounded-xl px-5 sm:px-6 py-4.5 border border-[#EDE7DC] hover:border-[#D5CDBD] shadow-2xs hover:shadow-soft transition-all duration-150 cursor-pointer group flex items-center gap-4 sm:gap-5 min-h-[68px] w-full"
                   >
-                    <div className="w-10 text-center shrink-0 font-normal text-sm sm:text-base text-[#747871]">
+                    <div className="w-8 text-center shrink-0 font-normal text-sm sm:text-base text-[#747871]">
                       {idx + 1}
                     </div>
 
@@ -304,23 +304,23 @@ export const DashboardView = () => {
                       <PriorityBadge priority={task.priority} size="xs" />
                     </div>
 
-                    <div className="min-w-[280px] flex-1 min-w-0 pr-3">
+                    <div className="min-w-[260px] flex-1 min-w-0 pr-3">
                       <span className="font-medium text-sm sm:text-[15px] text-[#2D322C] group-hover:text-[#4466B3] transition-colors truncate block" title={task.title}>
                         {task.title}
                       </span>
                     </div>
 
-                    <div className="w-48 shrink-0 min-w-0">
+                    <div className="w-44 shrink-0 min-w-0">
                       <span className="text-sm text-[#555952] font-normal truncate block" title={project?.name}>
                         {project?.name}
                       </span>
                     </div>
 
-                    <div className="w-48 shrink-0 min-w-0">
+                    <div className="w-44 shrink-0 min-w-0">
                       <Avatar member={assignee} size="xs" showName />
                     </div>
 
-                    <div className="w-36 shrink-0">
+                    <div className="w-32 shrink-0">
                       <span
                         className={`inline-flex items-center gap-2 text-sm font-normal ${
                           overdue
@@ -342,7 +342,7 @@ export const DashboardView = () => {
                     </div>
 
                     <div
-                      className="w-32 shrink-0 text-right"
+                      className="w-32 shrink-0 flex justify-end"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <StatusDropdown
